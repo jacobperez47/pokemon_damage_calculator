@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Pokemon.dart';
 
+import 'Pokemon Components/Types.dart';
+
 void main() {
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
