@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:pokemon_damage_calculator/Pokemon%20Components/Moves.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Pokemon.dart';
-
-import 'Pokemon Components/Types.dart';
+import 'package:pokemon_damage_calculator/Pokemon%20Components/Types.dart';
 
 void main() {
   runApp(const MyApp());
+}
 
+class Calculator extends StatelessWidget {
+  Pokemon attacker = new Pokemon();
+  Pokemon defender = new Pokemon();
+  Moves usedMove = new Moves(
+    'tackle',
+    power: 40,
+    type: Types.normal,
+    isSpecial: false,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
-
-
-
-
-
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
