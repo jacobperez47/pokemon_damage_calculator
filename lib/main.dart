@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Moves.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Pokemon.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Types.dart';
