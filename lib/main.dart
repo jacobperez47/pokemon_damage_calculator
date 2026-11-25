@@ -1,45 +1,46 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Moves.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Pokemon.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Types.dart';
-import 'calc_ui.dart';
+import 'package:pokemon_damage_calculator/calc_UI.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class Calculator extends StatelessWidget {
-  Pokemon attacker = new Pokemon();
-  Pokemon defender = new Pokemon();
-  Moves usedMove = new Moves(
+  final Pokemon attacker = Pokemon();
+  final Pokemon defender = Pokemon();
+  final Moves usedMove = Moves(
     'tackle',
     power: 40,
     type: Types.normal,
     isSpecial: false,
   );
 
+  Calculator({super.key});
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return const CalcUI();
   }
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pokemone Showdown Calculator',
+      title: 'Pokemon Showdown Calculator',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const CalcUI(),
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});

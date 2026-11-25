@@ -13,31 +13,29 @@ void main() {
       isSpecial: false,
     );
 
-    // ground vs fire/flying without levitate 
+    // ground vs fire/flying without levitate
     expect(
-      DamageModifierFramework.getTypeEffectiveness(
-        earthquake.type,
-        [Types.fire, Types.flying],
-      ),
+      DamageModifierFramework.getTypeEffectiveness(earthquake.type, [
+        Types.fire,
+        Types.flying,
+      ]),
       0.0,
     );
 
-    // ground vs electric with levitate 
+    // ground vs electric with levitate
     expect(
-      DamageModifierFramework.getTypeEffectiveness(
-        earthquake.type,
-        [Types.electric],
-        defenderAbility: Abilities.levitate,
-      ),
+      DamageModifierFramework.getTypeEffectiveness(earthquake.type, [
+        Types.electric,
+      ], defenderAbility: Abilities.levitate),
       0.0,
     );
 
-    // ground vs fire/steel 
+    // ground vs fire/steel
     expect(
-      DamageModifierFramework.getTypeEffectiveness(
-        earthquake.type,
-        [Types.fire, Types.steel],
-      ),
+      DamageModifierFramework.getTypeEffectiveness(earthquake.type, [
+        Types.fire,
+        Types.steel,
+      ]),
       4.0,
     );
   });
@@ -55,16 +53,31 @@ void main() {
       [31, 31, 31, 31, 31, 31],
       [Types.ice],
       100,
+      Natures.Hardy,
+      HeldItems.none,
+      Abilities.technician
     );
 
-    // technician (1.5x) * muscle band (1.1x)
+    final normalAttacker = Pokemon.filledConstructor(
+      [100, 100, 100, 100, 100, 100],
+      [0, 0, 0, 0, 0, 0],
+      [31, 31, 31, 31, 31, 31],
+      [Types.normal],
+      100,
+      Natures.Hardy,
+      HeldItems.none,
+      Abilities.none
+    );
+
+    // technician (1.5x) * muscle band (1.1x) * stab (1.5x)
     final powerMult = DamageModifierFramework.getBasePowerMultiplier(
       move: tackle,
       attackerItem: HeldItems.muscleBand,
       attackerAbility: Abilities.technician,
       field: FieldEffects(),
+      attacker: normalAttacker
     );
-    expect(powerMult, closeTo(1.65, 0.001));
+    expect(powerMult, closeTo(2.475, 0.001));
 
     // snow boosts Ice-type physical defense by 1.5x
     final defMult = DamageModifierFramework.getDefenseStatMultiplier(

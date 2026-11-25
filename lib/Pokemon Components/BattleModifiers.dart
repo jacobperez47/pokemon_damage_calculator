@@ -92,6 +92,7 @@ class DamageModifierFramework {
     required HeldItems attackerItem,
     required Abilities attackerAbility,
     required FieldEffects field,
+    required Pokemon attacker
   }) {
     double mult = 1.0;
 
@@ -100,6 +101,11 @@ class DamageModifierFramework {
       mult *= 1.1;
     } else if (attackerItem == HeldItems.wiseGlasses && move.isSpecial) {
       mult *= 1.1;
+    }
+
+    //stab boost
+    if(attacker.types.contains(move.type)){
+      mult *= 1.5;
     }
 
     // ability boosts

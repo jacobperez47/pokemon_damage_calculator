@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pokemon_damage_calculator/Pokemon%20Components/BattleModifiers.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Pokemon.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Types.dart';
 
@@ -10,6 +11,9 @@ void main() {
       [24, 12, 30, 16, 23, 5],
       [Types.dragon, Types.ground],
       78,
+      Natures.Hardy,
+      HeldItems.none,
+      Abilities.none
     );
 
     var finalStats = garchomp.calculateFinalStats(Natures.Adamant);

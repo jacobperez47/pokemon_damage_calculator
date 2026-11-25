@@ -1,3 +1,4 @@
+import 'package:pokemon_damage_calculator/Pokemon%20Components/BattleModifiers.dart';
 import 'package:pokemon_damage_calculator/Pokemon%20Components/Types.dart';
 
 enum Natures {
@@ -49,27 +50,39 @@ class Pokemon {
   List<int> IVs = [];
   List<Types> types = [];
   int level;
+  Natures nature;
+  HeldItems item;
+  Abilities ability;
 
   // Creating default constructor
   Pokemon()
-    : baseStats = [1, 1, 1, 1, 1, 1],
-      EVs = [0, 0, 0, 0, 0, 0],
-      IVs = [0, 0, 0, 0, 0, 0],
-      types = [],
-      level = 1;
+      : baseStats = [1, 1, 1, 1, 1, 1],
+        EVs = [0, 0, 0, 0, 0, 0],
+        IVs = [0, 0, 0, 0, 0, 0],
+        types = [],
+        level = 1,
+        nature = Natures.Hardy,
+        item = HeldItems.none,
+        ability = Abilities.none;
+
 
   // Creating parameterized Constructor
-  Pokemon.filledConstructor(
-    List<int> stats,
-    List<int> evs,
-    List<int> ivs,
-    List<Types> typelist,
-    int userLevel,
-  ) : baseStats = [...stats],
-      EVs = [...evs],
-      IVs = [...ivs],
-      types = [...typelist],
-      level = userLevel;
+  Pokemon.filledConstructor(List<int> stats,
+      List<int> evs,
+      List<int> ivs,
+      List<Types> typelist,
+      int userLevel,
+      Natures natureInput,
+      HeldItems itemHeld,
+      Abilities currentAbility)
+      : baseStats = [...stats],
+        EVs = [...evs],
+        IVs = [...ivs],
+        types = [...typelist],
+        level = userLevel,
+        nature = natureInput,
+        item = itemHeld,
+        ability = currentAbility;
 
   List<int> calculateFinalStats(Natures nature) {
     //HP is calculated differently from every other stat
@@ -77,8 +90,8 @@ class Pokemon {
 
     finalStats[0] =
         (((2 * baseStats[0] + IVs[0] + (EVs[0] ~/ 4)) * level) ~/ 100) +
-        level +
-        10;
+            level +
+            10;
 
     for (var i = 1; i < 6; i++) {
       finalStats[i] =
