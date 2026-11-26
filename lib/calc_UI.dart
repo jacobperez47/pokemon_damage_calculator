@@ -32,6 +32,7 @@ class _CalcUIState extends State<CalcUI> {
   String? _type1, _type2, _naturePlus, _natureMinus, _moveType;
 
   //controllers for the input boxes
+  late final Map<String, TextEditingController> _baseControllers;
   late final Map<String, TextEditingController> _evControllers;
   late final Map<String, TextEditingController> _ivControllers;
   late final Map<String, TextEditingController> _finalControllers;
@@ -42,6 +43,7 @@ class _CalcUIState extends State<CalcUI> {
   void initState() {
     super.initState();
     //make one controller per stat
+    _baseControllers = {for (final s in _stats) s: TextEditingController()};
     _evControllers = {for (final s in _stats) s: TextEditingController()};
     _ivControllers = {for (final s in _stats) s: TextEditingController()};
     _finalControllers = {for (final s in _stats) s: TextEditingController()};
@@ -51,6 +53,7 @@ class _CalcUIState extends State<CalcUI> {
   void dispose() {
     //clean up every controller
     for (final c in [
+      ..._baseControllers.values,
       ..._evControllers.values,
       ..._ivControllers.values,
       ..._finalControllers.values,
@@ -131,6 +134,7 @@ class _CalcUIState extends State<CalcUI> {
     return TableRow(
       children: [
         const SizedBox(),
+        _label('Base', size: 16),
         _label('EVS', size: 16),
         _label('IVS', size: 16),
         _label('Final Stat', size: 16),
@@ -153,6 +157,11 @@ class _CalcUIState extends State<CalcUI> {
             ),//end of BoxDecoration
             child: _label(stat, size: 16),
           ),//end of Container
+        ),//end of Padding
+        //base stat box
+        Padding(
+          padding: const EdgeInsets.all(6),
+          child: _numberField(_baseControllers[stat]!, maxValue: 255),
         ),//end of Padding
         //EV box
         Padding(
