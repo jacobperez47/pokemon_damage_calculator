@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokemon_damage_calculator/Pokemon%20Components/Pokemon.dart';
 
 class CalcUI extends StatefulWidget {
   const CalcUI({super.key});
@@ -9,6 +10,9 @@ class CalcUI extends StatefulWidget {
 }//end of CalcUI
 
 class _CalcUIState extends State<CalcUI> {
+
+  late Pokemon attacker;
+  late Pokemon defender;
   //colors from the mockup
   static const Color _bg = Color(0xFFFBF0BE);
   static const Color _pill = Color(0xFFCBD2DC);
@@ -335,6 +339,11 @@ class _CalcUIState extends State<CalcUI> {
       ),//end of SafeArea
     );//end of Scaffold
   }//end of build
+
+  //function for taking the input and creating attacking and defending pokemon
+void CalculatePokemon() {
+
+}
 }//end of _CalcUIState
 
 //stops typing a number above max (IV 31, EV 252)
