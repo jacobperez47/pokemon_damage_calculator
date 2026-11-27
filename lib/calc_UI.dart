@@ -16,8 +16,37 @@ class _CalcUIState extends State<CalcUI> {
 
   //stat labels
   final List<String> _stats = ['HP', 'Atk', 'DEF', 'SPA', 'SDEF', 'SPD'];
-  //nature options (no HP)
-  final List<String> _natureStats = ['Atk', 'DEF', 'SPA', 'SDEF', 'SPD'];
+  final Map<String, List<String>> _natures = {
+    'Hardy': [],
+    'Lonely': ['Atk', 'DEF'],
+    'Brave': ['Atk', 'SPD'],
+    'Adamant': ['Atk', 'SPA'],
+    'Naughty': ['Atk', 'SDEF'],
+    'Bold': ['DEF', 'Atk'],
+    'Docile': [],
+    'Relaxed': ['DEF', 'SPD'],
+    'Impish': ['DEF', 'SPA'],
+    'Lax': ['DEF', 'SDEF'],
+    'Timid': ['SPD', 'Atk'],
+    'Hasty': ['SPD', 'DEF'],
+    'Serious': [],
+    'Jolly': ['SPD', 'SPA'],
+    'Naive': ['SPD', 'SDEF'],
+    'Modest': ['SPA', 'Atk'],
+    'Mild': ['SPA', 'DEF'],
+    'Quiet': ['SPA', 'SPD'],
+    'Bashful': [],
+    'Rash': ['SPA', 'SDEF'],
+    'Calm': ['SDEF', 'Atk'],
+    'Gentle': ['SDEF', 'DEF'],
+    'Sassy': ['SDEF', 'SPD'],
+    'Careful': ['SDEF', 'SPA'],
+    'Quirky': [],
+  };//end of _natures
+  //weather options
+  final List<String> _weathers = ['None', 'Sun', 'Rain', 'Sandstorm', 'Snow'];
+  //terrain options
+  final List<String> _terrains = ['None', 'Electric', 'Grassy', 'Misty', 'Psychic'];
   //type 1/type 2 options
   final List<String> _types = [
     'Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice',
@@ -29,7 +58,7 @@ class _CalcUIState extends State<CalcUI> {
   bool _isAttacking = true;
 
   //selected dropdown values
-  String? _type1, _type2, _naturePlus, _natureMinus, _moveType;
+  String? _type1, _type2, _nature, _weather, _terrain, _moveType;
 
   //controllers for the input boxes
   late final Map<String, TextEditingController> _baseControllers;
@@ -182,6 +211,14 @@ class _CalcUIState extends State<CalcUI> {
     );//end of TableRow
   }//end of _statRow
 
+  //text under the nature dropdown 
+  String _natureEffect() {
+    if (_nature == null) return '';
+    final effect = _natures[_nature]!;
+    if (effect.isEmpty) return 'No stat change';
+    return '+${effect[0]}   -${effect[1]}';
+  }//end of _natureEffect
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -255,6 +292,36 @@ class _CalcUIState extends State<CalcUI> {
               ),//end of Row
               const SizedBox(height: 16),
 
+              //weather/terrain row
+              Row(
+                children: [
+                  Expanded(
+                    child: _dropdown(
+                      hint: 'Weather',
+                      items: _weathers,
+                      onChanged: (v) {
+                        setState(() {
+                          _weather = v;
+                        });//end of setState
+                      },//end of onChanged
+                    ),//end of _dropdown
+                  ),//end of Expanded
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _dropdown(
+                      hint: 'Terrain',
+                      items: _terrains,
+                      onChanged: (v) {
+                        setState(() {
+                          _terrain = v;
+                        });//end of setState
+                      },//end of onChanged
+                    ),//end of _dropdown
+                  ),//end of Expanded
+                ],//end of children
+              ),//end of Row
+              const SizedBox(height: 16),
+
               //headers + the 6 stat rows
               Table(
                 columnWidths: const {0: FixedColumnWidth(72)},
@@ -266,34 +333,20 @@ class _CalcUIState extends State<CalcUI> {
               ),//end of Table
               const SizedBox(height: 16),
 
-              //Nature
-              Row(
-                children: [
-                  Expanded(
-                    child: _dropdown(
-                      hint: 'Nature +',
-                      items: _natureStats,
-                      onChanged: (v) {
-                        setState(() {
-                          _naturePlus = v;
-                        });//end of setState
-                      },//end of onChanged
-                    ),//end of _dropdown
-                  ),//end of Expanded
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _dropdown(
-                      hint: 'Nature -',
-                      items: _natureStats,
-                      onChanged: (v) {
-                        setState(() {
-                          _natureMinus = v;
-                        });//end of setState
-                      },//end of onChanged
-                    ),//end of _dropdown
-                  ),//end of Expanded
-                ],//end of children
-              ),//end of Row
+              //Nature (one dropdown, shows what it changes)
+              _dropdown(
+                hint: 'Nature',
+                items: _natures.keys.toList(),
+                onChanged: (v) {
+                  setState(() {
+                    _nature = v;
+                  });//end of setState
+                },//end of onChanged
+              ),//end of _dropdown
+              const SizedBox(height: 6),
+              Center(
+                child: Text(_natureEffect()),
+              ),//end of Center
               const SizedBox(height: 24),
 
               //Move/type/power
