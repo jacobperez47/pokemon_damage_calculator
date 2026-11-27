@@ -7,12 +7,12 @@ class CalcUI extends StatefulWidget {
 
   @override
   State<CalcUI> createState() => _CalcUIState();
-}//end of CalcUI
+} //end of CalcUI
 
 class _CalcUIState extends State<CalcUI> {
-
   late Pokemon attacker;
   late Pokemon defender;
+
   //colors from the mockup
   static const Color _bg = Color(0xFFFBF0BE);
   static const Color _pill = Color(0xFFCBD2DC);
@@ -20,14 +20,43 @@ class _CalcUIState extends State<CalcUI> {
 
   //stat labels
   final List<String> _stats = ['HP', 'Atk', 'DEF', 'SPA', 'SDEF', 'SPD'];
+
   //nature options (no HP)
   final List<String> _natureStats = ['Atk', 'DEF', 'SPA', 'SDEF', 'SPD'];
+
   //type 1/type 2 options
   final List<String> _types = [
-    'Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice',
-    'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug',
-    'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy',
-  ];//end of _types
+    'Normal',
+    'Fire',
+    'Water',
+    'Electric',
+    'Grass',
+    'Ice',
+    'Fighting',
+    'Poison',
+    'Ground',
+    'Flying',
+    'Psychic',
+    'Bug',
+    'Rock',
+    'Ghost',
+    'Dragon',
+    'Dark',
+    'Steel',
+    'Fairy',
+  ]; //end of _types
+
+  //weather labels
+  final List<String> _weather = ['none', 'sun', 'rain', 'sand', 'snow'];
+
+  //terrain labels
+  final List<String> _terrain = [
+    'none',
+    'electric',
+    'grassy',
+    'misty',
+    'psychic',
+  ];
 
   //toggle state
   bool _isAttacking = true;
@@ -51,7 +80,7 @@ class _CalcUIState extends State<CalcUI> {
     _evControllers = {for (final s in _stats) s: TextEditingController()};
     _ivControllers = {for (final s in _stats) s: TextEditingController()};
     _finalControllers = {for (final s in _stats) s: TextEditingController()};
-  }//end of initState
+  } //end of initState
 
   @override
   void dispose() {
@@ -65,9 +94,9 @@ class _CalcUIState extends State<CalcUI> {
       _powerController,
     ]) {
       c.dispose();
-    }//end of for
+    } //end of for
     super.dispose();
-  }//end of dispose
+  } //end of dispose
 
   //pill style used by every box
   InputDecoration _pillDecoration({String? hint, Color color = _pill}) {
@@ -80,17 +109,17 @@ class _CalcUIState extends State<CalcUI> {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20),
         borderSide: BorderSide.none,
-      ),//end of OutlineInputBorder
-    );//end of InputDecoration
-  }//end of _pillDecoration
+      ), //end of OutlineInputBorder
+    ); //end of InputDecoration
+  } //end of _pillDecoration
 
   //number box (EV, IV, final stat)
   Widget _numberField(
-      TextEditingController controller, {
-        int? maxValue,
-        Color color = _pill,
-        bool readOnly = false,
-      }) {
+    TextEditingController controller, {
+    int? maxValue,
+    Color color = _pill,
+    bool readOnly = false,
+  }) {
     return TextField(
       controller: controller,
       readOnly: readOnly,
@@ -99,10 +128,11 @@ class _CalcUIState extends State<CalcUI> {
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
         if (maxValue != null) _MaxValueFormatter(maxValue),
-      ],//end of inputFormatters
+      ],
+      //end of inputFormatters
       decoration: _pillDecoration(color: color),
-    );//end of TextField
-  }//end of _numberField
+    ); //end of TextField
+  } //end of _numberField
 
   //dropdown (types, natures)
   Widget _dropdown({
@@ -120,8 +150,8 @@ class _CalcUIState extends State<CalcUI> {
         return DropdownMenuItem<String>(value: t, child: Text(t));
       }).toList(),
       onChanged: onChanged,
-    );//end of DropdownButtonFormField
-  }//end of _dropdown
+    ); //end of DropdownButtonFormField
+  } //end of _dropdown
 
   //centered text label
   Widget _label(String text, {double size = 14}) {
@@ -129,9 +159,9 @@ class _CalcUIState extends State<CalcUI> {
       child: Text(
         text,
         style: TextStyle(fontSize: size, fontWeight: FontWeight.w500),
-      ),//end of Text
-    );//end of Center
-  }//end of _label
+      ), //end of Text
+    ); //end of Center
+  } //end of _label
 
   //headers
   TableRow _headerRow() {
@@ -142,9 +172,9 @@ class _CalcUIState extends State<CalcUI> {
         _label('EVS', size: 16),
         _label('IVS', size: 16),
         _label('Final Stat', size: 16),
-      ],//end of children
-    );//end of TableRow
-  }//end of _headerRow
+      ], //end of children
+    ); //end of TableRow
+  } //end of _headerRow
 
   //stats (1 label + the 3 input fields)
   TableRow _statRow(String stat) {
@@ -158,33 +188,33 @@ class _CalcUIState extends State<CalcUI> {
             decoration: BoxDecoration(
               color: _pill,
               borderRadius: BorderRadius.circular(20),
-            ),//end of BoxDecoration
+            ), //end of BoxDecoration
             child: _label(stat, size: 16),
-          ),//end of Container
-        ),//end of Padding
+          ), //end of Container
+        ), //end of Padding
         //base stat box
         Padding(
           padding: const EdgeInsets.all(6),
           child: _numberField(_baseControllers[stat]!, maxValue: 255),
-        ),//end of Padding
+        ), //end of Padding
         //EV box
         Padding(
           padding: const EdgeInsets.all(6),
           child: _numberField(_evControllers[stat]!, maxValue: 252),
-        ),//end of Padding
+        ), //end of Padding
         //IV box
         Padding(
           padding: const EdgeInsets.all(6),
           child: _numberField(_ivControllers[stat]!, maxValue: 31),
-        ),//end of Padding
+        ), //end of Padding
         //final stat box
         Padding(
           padding: const EdgeInsets.all(6),
           child: _numberField(_finalControllers[stat]!, readOnly: true),
-        ),//end of Padding
-      ],//end of children
-    );//end of TableRow
-  }//end of _statRow
+        ), //end of Padding
+      ], //end of children
+    ); //end of TableRow
+  } //end of _statRow
 
   @override
   Widget build(BuildContext context) {
@@ -204,20 +234,20 @@ class _CalcUIState extends State<CalcUI> {
                   style: FilledButton.styleFrom(
                     backgroundColor: _pill,
                     foregroundColor: Colors.black87,
-                  ),//end of styleFrom
+                  ), //end of styleFrom
                   onPressed: () {
                     setState(() {
                       _isAttacking = !_isAttacking;
-                    });//end of setState
-                  },//end of onPressed
+                    }); //end of setState
+                  }, //end of onPressed
                   child: Text(
                     _isAttacking
                         ? 'Switch to defending\npokemon stats'
                         : 'Switch to attacking\npokemon stats',
                     textAlign: TextAlign.center,
-                  ),//end of Text
-                ),//end of FilledButton
-              ),//end of Align
+                  ), //end of Text
+                ), //end of FilledButton
+              ), //end of Align
               const SizedBox(height: 24),
 
               //screen title
@@ -225,8 +255,8 @@ class _CalcUIState extends State<CalcUI> {
                 child: Text(
                   'Final Calculation Range',
                   style: TextStyle(fontSize: 26),
-                ),//end of Text
-              ),//end of Center
+                ), //end of Text
+              ), //end of Center
               const SizedBox(height: 24),
 
               //type 1/type 2 row
@@ -239,10 +269,10 @@ class _CalcUIState extends State<CalcUI> {
                       onChanged: (v) {
                         setState(() {
                           _type1 = v;
-                        });//end of setState
-                      },//end of onChanged
-                    ),//end of _dropdown
-                  ),//end of Expanded
+                        }); //end of setState
+                      }, //end of onChanged
+                    ), //end of _dropdown
+                  ), //end of Expanded
                   const SizedBox(width: 16),
                   Expanded(
                     child: _dropdown(
@@ -251,12 +281,12 @@ class _CalcUIState extends State<CalcUI> {
                       onChanged: (v) {
                         setState(() {
                           _type2 = v;
-                        });//end of setState
-                      },//end of onChanged
-                    ),//end of _dropdown
-                  ),//end of Expanded
-                ],//end of children
-              ),//end of Row
+                        }); //end of setState
+                      }, //end of onChanged
+                    ), //end of _dropdown
+                  ), //end of Expanded
+                ], //end of children
+              ), //end of Row
               const SizedBox(height: 16),
 
               //headers + the 6 stat rows
@@ -266,8 +296,8 @@ class _CalcUIState extends State<CalcUI> {
                 children: [
                   _headerRow(),
                   for (final stat in _stats) _statRow(stat),
-                ],//end of children
-              ),//end of Table
+                ], //end of children
+              ), //end of Table
               const SizedBox(height: 16),
 
               //Nature
@@ -280,10 +310,10 @@ class _CalcUIState extends State<CalcUI> {
                       onChanged: (v) {
                         setState(() {
                           _naturePlus = v;
-                        });//end of setState
-                      },//end of onChanged
-                    ),//end of _dropdown
-                  ),//end of Expanded
+                        }); //end of setState
+                      }, //end of onChanged
+                    ), //end of _dropdown
+                  ), //end of Expanded
                   const SizedBox(width: 16),
                   Expanded(
                     child: _dropdown(
@@ -292,12 +322,12 @@ class _CalcUIState extends State<CalcUI> {
                       onChanged: (v) {
                         setState(() {
                           _natureMinus = v;
-                        });//end of setState
-                      },//end of onChanged
-                    ),//end of _dropdown
-                  ),//end of Expanded
-                ],//end of children
-              ),//end of Row
+                        }); //end of setState
+                      }, //end of onChanged
+                    ), //end of _dropdown
+                  ), //end of Expanded
+                ], //end of children
+              ), //end of Row
               const SizedBox(height: 24),
 
               //Move/type/power
@@ -307,8 +337,8 @@ class _CalcUIState extends State<CalcUI> {
                     child: TextField(
                       controller: _moveController,
                       decoration: _pillDecoration(hint: 'Move', color: _blue),
-                    ),//end of TextField
-                  ),//end of Expanded
+                    ), //end of TextField
+                  ), //end of Expanded
                   const SizedBox(width: 12),
                   Expanded(
                     child: _dropdown(
@@ -318,10 +348,10 @@ class _CalcUIState extends State<CalcUI> {
                       onChanged: (v) {
                         setState(() {
                           _moveType = v;
-                        });//end of setState
-                      },//end of onChanged
-                    ),//end of _dropdown
-                  ),//end of Expanded
+                        }); //end of setState
+                      }, //end of onChanged
+                    ), //end of _dropdown
+                  ), //end of Expanded
                   const SizedBox(width: 12),
                   Expanded(
                     child: TextField(
@@ -329,33 +359,34 @@ class _CalcUIState extends State<CalcUI> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: _pillDecoration(hint: 'Power', color: _blue),
-                    ),//end of TextField
-                  ),//end of Expanded
-                ],//end of children
-              ),//end of Row
-            ],//end of children
-          ),//end of Column
-        ),//end of SingleChildScrollView
-      ),//end of SafeArea
-    );//end of Scaffold
-  }//end of build
+                    ), //end of TextField
+                  ), //end of Expanded
+                ], //end of children
+              ), //end of Row
+            ], //end of children
+          ), //end of Column
+        ), //end of SingleChildScrollView
+      ), //end of SafeArea
+    ); //end of Scaffold
+  } //end of build
 
   //function for taking the input and creating attacking and defending pokemon
-void CalculatePokemon() {
-
-}
-}//end of _CalcUIState
+  void CalculatePokemon() {}
+} //end of _CalcUIState
 
 //stops typing a number above max (IV 31, EV 252)
 class _MaxValueFormatter extends TextInputFormatter {
   final int max;
+
   _MaxValueFormatter(this.max);
 
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (newValue.text.isEmpty) return newValue;
     final value = int.tryParse(newValue.text);
     return (value != null && value <= max) ? newValue : oldValue;
-  }//end of formatEditUpdate
-}//end of _MaxValueFormatter
+  } //end of formatEditUpdate
+} //end of _MaxValueFormatter
