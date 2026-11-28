@@ -66,7 +66,7 @@ void main() {
     );
     expect(powerMult, closeTo(1.65, 0.001));
 
-    // snow boosts Ice-type physical defense by 1.5x
+    // snow boosts ice-type physical defense by 1.5x
     final defMult = DamageModifierFramework.getDefenseStatMultiplier(
       move: tackle,
       defender: iceDefender,
