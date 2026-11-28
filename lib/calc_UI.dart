@@ -1,5 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+//
+import 'package:pokemon_damage_calculator/Pokemon%20Components/Moves.dart';
+import 'package:pokemon_damage_calculator/Pokemon%20Components/Pokemon.dart';
+import 'package:pokemon_damage_calculator/Pokemon%20Components/PokemonForm.dart';
+import 'package:pokemon_damage_calculator/Pokemon%20Components/Types.dart';
+//
 
 class CalcUI extends StatefulWidget {
   const CalcUI({super.key});
@@ -68,6 +74,47 @@ class _CalcUIState extends State<CalcUI> {
   final TextEditingController _moveController = TextEditingController();
   final TextEditingController _powerController = TextEditingController();
 
+// *
+// saved inputs for attacking and defending pokemon to keep the data
+  final PokemonFormSnapshot _attackerSnapshot = PokemonFormSnapshot();
+  final PokemonFormSnapshot _defenderSnapshot = PokemonFormSnapshot();
+
+  // the pokemon and move objects are filled from user input
+  Pokemon attacker = Pokemon();
+  Pokemon defender = Pokemon();
+  Moves usedMove = Moves('tackle', power: 40, type: Types.normal, isSpecial: false);
+
+  PokemonFormSnapshot get _activeSnapshot =>
+      _isAttacking ? _attackerSnapshot : _defenderSnapshot;
+
+  void _syncInputsToModels() {
+    final snap = _activeSnapshot;
+    snap.type1 = _type1;
+    snap.type2 = _type2;
+    snap.nature = _nature;
+
+    for (final stat in _stats) {
+      snap.baseText[stat] = _baseControllers[stat]!.text;
+      snap.evText[stat] = _evControllers[stat]!.text;
+      snap.ivText[stat] = _ivControllers[stat]!.text;
+    }
+
+    // fill the actual attacker, defender, and usedMove models
+    attacker = _attackerSnapshot.toPokemon();
+    defender = _defenderSnapshot.toPokemon();
+    usedMove = PokemonFormSnapshot.buildMove(
+      nameText: _moveController.text,
+      moveTypeText: _moveType,
+      powerText: _powerController.text,
+    );
+
+    // auto fill read-only 'final stats' boxes live 
+    final finals = snap.calculateFinalStats();
+    for (int i = 0; i < _stats.length; i++) {
+      _finalControllers[_stats[i]]!.text = finals[i].toString();
+    }
+  }
+// *
   @override
   void initState() {
     super.initState();
@@ -121,6 +168,7 @@ class _CalcUIState extends State<CalcUI> {
       readOnly: readOnly,
       textAlign: TextAlign.center,
       keyboardType: TextInputType.number,
+      onChanged: readOnly ? null : (_) => setState(()=> _syncInputsToModels()),
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
         if (maxValue != null) _MaxValueFormatter(maxValue),
@@ -134,9 +182,11 @@ class _CalcUIState extends State<CalcUI> {
     required String hint,
     required List<String> items,
     required ValueChanged<String?> onChanged,
+    String? value,
     Color color = _pill,
   }) {
     return DropdownButtonFormField<String>(
+      value: value,
       isExpanded: true,
       hint: Text(hint, style: const TextStyle(fontSize: 13)),
       decoration: _pillDecoration(color: color),
@@ -240,7 +290,19 @@ class _CalcUIState extends State<CalcUI> {
                   ),//end of styleFrom
                   onPressed: () {
                     setState(() {
+                      _syncInputsToModels(); // save current side
                       _isAttacking = !_isAttacking;
+
+                      final next = _activeSnapshot;
+                        _type1 = next.type1;
+                        _type2 = next.type2;
+                        _nature = next.nature;
+                        for (final stat in _stats) {
+                          _baseControllers[stat]!.text = next.baseText[stat] ?? '';
+                          _evControllers[stat]!.text = next.evText[stat] ?? '';
+                          _ivControllers[stat]!.text = next.ivText[stat] ?? '';
+                        }
+                        _syncInputsToModels();//refresg final stat column
                     });//end of setState
                   },//end of onPressed
                   child: Text(
@@ -268,10 +330,12 @@ class _CalcUIState extends State<CalcUI> {
                   Expanded(
                     child: _dropdown(
                       hint: 'Type 1',
+                      value: _type1,
                       items: _types,
                       onChanged: (v) {
                         setState(() {
                           _type1 = v;
+                          _syncInputsToModels();
                         });//end of setState
                       },//end of onChanged
                     ),//end of _dropdown
@@ -280,10 +344,12 @@ class _CalcUIState extends State<CalcUI> {
                   Expanded(
                     child: _dropdown(
                       hint: 'Type 2',
+                      value: _type2,
                       items: _types,
                       onChanged: (v) {
                         setState(() {
                           _type2 = v;
+                          _syncInputsToModels();
                         });//end of setState
                       },//end of onChanged
                     ),//end of _dropdown
@@ -340,6 +406,7 @@ class _CalcUIState extends State<CalcUI> {
                 onChanged: (v) {
                   setState(() {
                     _nature = v;
+                    _syncInputsToModels();
                   });//end of setState
                 },//end of onChanged
               ),//end of _dropdown
@@ -355,6 +422,7 @@ class _CalcUIState extends State<CalcUI> {
                   Expanded(
                     child: TextField(
                       controller: _moveController,
+                      onChanged: (_) => setState(() => _syncInputsToModels()),
                       decoration: _pillDecoration(hint: 'Move', color: _blue),
                     ),//end of TextField
                   ),//end of Expanded
@@ -367,6 +435,7 @@ class _CalcUIState extends State<CalcUI> {
                       onChanged: (v) {
                         setState(() {
                           _moveType = v;
+                          _syncInputsToModels();
                         });//end of setState
                       },//end of onChanged
                     ),//end of _dropdown
@@ -376,6 +445,7 @@ class _CalcUIState extends State<CalcUI> {
                     child: TextField(
                       controller: _powerController,
                       keyboardType: TextInputType.number,
+                      onChanged: (_) => setState(() => _syncInputsToModels()),
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: _pillDecoration(hint: 'Power', color: _blue),
                     ),//end of TextField
